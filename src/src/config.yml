@@ -1,0 +1,9 @@
+Storage:
+    enabled: true
+    engine: sqlite
+    MySQL:
+        host: localhost
+        port: 3306
+        pass: ''
+        db: minecraft
+        user: root
