@@ -164,9 +164,9 @@ public class FileManager {
 		if (!faction.exists()) {
 			try {
 				faction.createNewFile();
-				plugin.getLogger().info("Generating new default Kingdom file!");
+				plugin.getLogger().info("Generating new default Faction file!");
 			} catch (IOException e) {
-				plugin.getLogger().info("Failed to generate new default Kingdom file!");
+				plugin.getLogger().info("Failed to generate new default Faction file!");
 				e.printStackTrace();
 			}
 		}
@@ -230,7 +230,7 @@ public class FileManager {
 		}
 		
 		if (ChatChannels.isUsingFactions()) {
-			
+			loadFactions(folder);
 		}
 		
 		for (File file : folder.listFiles()) {

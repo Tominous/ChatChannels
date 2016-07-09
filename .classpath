@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/spigot-1.10.jar"/>
 	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/Feudal/Feudal.jar"/>
-	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/Factions-2.8.19/Factions-2.8.19/Factions.jar"/>
-	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/Factions-2.8.19/Factions-2.8.19/MassiveCore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/Test Server/Test Server/plugins/Factions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/simpl_000/Downloads/Test Server/Test Server/plugins/MassiveCore.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

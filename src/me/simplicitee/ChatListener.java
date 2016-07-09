@@ -29,6 +29,7 @@ public class ChatListener implements Listener{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChat(AsyncPlayerChatEvent event) {
 		if (event.isCancelled()) return;
+		if (!event.isAsynchronous()) return;
 		
 		Player player = event.getPlayer();
 		Set<Player> recipients;
@@ -42,26 +43,34 @@ public class ChatListener implements Listener{
 			Channel channel = Channel.getChannels().get(chat);
 			
 			if (event.getMessage() == null) break;
-			
-			if (channel.getName().equals("Kingdom")) {
-				if (ChatChannels.isUsingFeudal()) {
-					
-				}
-				return;
-			}
-			
-			if (channel.getName().equals("Faction")) {
-				if (ChatChannels.isUsingFactions()) {
-					
-				}
-				return;
-			}
-			
 			if (!player.hasPermission(channel.getSendPermission()) && !player.hasPermission(channel.getAllPermission())) continue;
 			
 			for (Player recipient : event.getRecipients()) {
 				if (player.getUniqueId() == recipient.getUniqueId()) {
 					continue;
+				}
+				if (channel.getName().equals("Kingdom")) {
+					if (ChatChannels.isUsingFeudal()) {
+						User user = Feudal.getUser(player.getUniqueId().toString());
+						Kingdom kingdom = Feudal.getKingdom(user.getKingdomUUID());
+						
+						if (!kingdom.isMember(recipient.getUniqueId().toString())) {
+							recipients.remove(recipient);
+							continue;
+						}
+					}
+				}
+				if (channel.getName().equals("Faction")) {
+					if (ChatChannels.isUsingFactions()) {
+						MPlayer user = MPlayerColl.get().getByName(player.getName());
+						MPlayer recip = MPlayerColl.get().getByName(recipient.getName());
+						Faction faction = FactionColl.get().getByName(user.getFactionName());
+						
+						if (!faction.getMPlayers().contains(recip)) {
+							recipients.remove(recipient);
+							continue;
+						}
+					}
 				}
 				if (channel.getDistance() != -1) {
 					if (player.getWorld() != recipient.getWorld()) { 
@@ -72,7 +81,7 @@ public class ChatListener implements Listener{
 						recipients.remove(recipient);
 						continue;
 					}
-				}
+				} 
 				if (!recipient.hasPermission(channel.getReadPermission())) {
 					recipients.remove(recipient);
 					continue;
@@ -103,6 +112,11 @@ public class ChatListener implements Listener{
 			if (ChatChannels.isUsingFeudal()) {
 				User user = Feudal.getUser(event.getPlayer().getUniqueId().toString());
 				Kingdom kingdom = Feudal.getKingdom(user.getKingdomUUID());
+				if (kingdom == null) {
+					event.getPlayer().sendMessage(ChatColor.RED + "You do not belong to any Feudal kingdom!");
+					event.setCancelled(true);
+					return;
+				}
 				prefix = prefix.replace("<kingdom>", kingdom.getName());
 			}
 		}
