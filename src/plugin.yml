@@ -1,12 +1,11 @@
 name: ChatChannels
 main: me.simplicitee.ChatChannels
-version: 5.2
+version: 1.6.0
 author: Simplicitee
 description: Unique and easy chat channels plugin
-softdepend: [Feudal, Factions]
 commands:
     channel:
-        aliases: [channel, ch]
+        aliases: [channel, ch, chatchannel, chatchannels, channels, chatch, chat, cc]
         description: Main command for chatchannels
         permission: chatchannels.command.channel
         default: true

@@ -3,7 +3,6 @@ package me.simplicitee.command;
 import java.io.File;
 import java.util.Arrays;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.simplicitee.Channel;
 import me.simplicitee.ChatChannels;
 import me.simplicitee.FileManager;
-import mkremins.fanciful.FancyMessage;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class ChannelCommand implements CommandExecutor{
 	
@@ -67,14 +69,14 @@ public class ChannelCommand implements CommandExecutor{
 				}
 			}
 			else if (Arrays.asList(list).contains(args[0].toLowerCase())) {
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c<&b&kO&c>-< &bChannels &c>-<&b&kO&c>"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c<&b&kO&r&c>-< &bChannels &c>-<&b&kO&r&c>"));
 				for (String name : Channel.getChannels().keySet()) {
 					Channel channel = Channel.getChannels().get(name);
 					if (sender.hasPermission(channel.getSendPermission()) || sender.hasPermission(channel.getAllPermission())) {
-						new FancyMessage("- " + name)
-						.color(ChatColor.AQUA)
-						.tooltip("Symbol: " + channel.getSymbol() + "\nDistance: " + channel.getDistance())
-						.send(sender);
+						TextComponent component = new TextComponent("- " + name);
+						component.setColor(ChatColor.AQUA);
+						component.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, new TextComponent[] {new TextComponent("Symbol: " + channel.getSymbol() + "\nDistance: " + channel.getDistance())}));
+						sender.spigot().sendMessage(component);
 					}
 				}
 			}

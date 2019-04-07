@@ -71,7 +71,7 @@ public class FileManager {
 		staffyaml.addDefault("name", "Staff");
 		staffyaml.addDefault("prefix", "&c(Staff Chat)");
 		staffyaml.addDefault("symbol", "$");
-		staffyaml.addDefault("format", "<prefix> &r<player>: <message>");
+		staffyaml.addDefault("format", "<prefix> &r<player-username>: <message>");
 		staffyaml.addDefault("alert-sound", "ENTITY_EXPERIENCE_ORB_PICKUP");
 		staffyaml.addDefault("distance", -1);
 		staffyaml.addDefault("send-permission", "chatchannels.staff.send");
@@ -106,7 +106,7 @@ public class FileManager {
 		localyaml.addDefault("name", "Local");
 		localyaml.addDefault("prefix", "&9(Local Chat)");
 		localyaml.addDefault("symbol", "@");
-		localyaml.addDefault("format", "<prefix> &r<player>: <message>");
+		localyaml.addDefault("format", "<prefix> &r<player-username>: <message>");
 		localyaml.addDefault("distance", 50);
 		localyaml.addDefault("alert-sound", "BLOCK_LAVA_POP");
 		localyaml.addDefault("send-permission", "chatchannels.local.send");
@@ -121,7 +121,7 @@ public class FileManager {
 		}
 	}
 	
-	public static void loadFeudal(File folder) {
+	/*public static void loadFeudal(File folder) {
 		File feudal = new File(folder, "Kingdom.yml");
 		
 		FileConfiguration yaml = YamlConfiguration.loadConfiguration(feudal);
@@ -189,7 +189,7 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void saveFiles() {
 		for (String chat : Channel.getChannels().keySet()) {
@@ -225,13 +225,13 @@ public class FileManager {
 			loadLocal(folder);
 		}
 		
-		if (ChatChannels.isUsingFeudal()) {
+		/*if (ChatChannels.isUsingFeudal()) {
 			loadFeudal(folder);
 		}
 		
 		if (ChatChannels.isUsingFactions()) {
 			loadFactions(folder);
-		}
+		}*/
 		
 		for (File file : folder.listFiles()) {
 			FileConfiguration config = YamlConfiguration.loadConfiguration(file);

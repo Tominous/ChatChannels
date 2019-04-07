@@ -1,7 +1,6 @@
 package me.simplicitee;
 
-import java.util.ConcurrentModificationException;
-import java.util.Set;
+import java.util.Iterator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,15 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.entity.FactionColl;
-import com.massivecraft.factions.entity.MPlayer;
-import com.massivecraft.factions.entity.MPlayerColl;
-
 import me.simplicitee.storage.DBConnection;
-import us.forseth11.feudal.core.Feudal;
-import us.forseth11.feudal.kingdoms.Kingdom;
-import us.forseth11.feudal.user.User;
 
 public class ChatListener implements Listener{
 	
@@ -32,12 +23,6 @@ public class ChatListener implements Listener{
 		if (!event.isAsynchronous()) return;
 		
 		Player player = event.getPlayer();
-		Set<Player> recipients;
-		try {
-			recipients = event.getRecipients();
-		} catch (ConcurrentModificationException e) {
-			return;
-		}
 		
 		for (String chat : Channel.getChannels().keySet()) {
 			Channel channel = Channel.getChannels().get(chat);
@@ -45,46 +30,28 @@ public class ChatListener implements Listener{
 			if (event.getMessage() == null) break;
 			if (!player.hasPermission(channel.getSendPermission()) && !player.hasPermission(channel.getAllPermission())) continue;
 			
-			for (Player recipient : event.getRecipients()) {
+			Iterator<Player> recipients = event.getRecipients().iterator();
+			while (recipients.hasNext()) {
+				Player recipient = recipients.next();
+			
 				if (player.getUniqueId() == recipient.getUniqueId()) {
 					continue;
+				} 
+				
+				if (!recipient.hasPermission(channel.getReadPermission())) {
+					recipients.remove();
+					continue;
 				}
-				if (channel.getName().equals("Kingdom")) {
-					if (ChatChannels.isUsingFeudal()) {
-						User user = Feudal.getUser(player.getUniqueId().toString());
-						Kingdom kingdom = Feudal.getKingdom(user.getKingdomUUID());
-						
-						if (!kingdom.isMember(recipient.getUniqueId().toString())) {
-							recipients.remove(recipient);
-							continue;
-						}
-					}
-				}
-				if (channel.getName().equals("Faction")) {
-					if (ChatChannels.isUsingFactions()) {
-						MPlayer user = MPlayerColl.get().getByName(player.getName());
-						MPlayer recip = MPlayerColl.get().getByName(recipient.getName());
-						Faction faction = FactionColl.get().getByName(user.getFactionName());
-						
-						if (!faction.getMPlayers().contains(recip)) {
-							recipients.remove(recipient);
-							continue;
-						}
-					}
-				}
+				
 				if (channel.getDistance() != -1) {
 					if (player.getWorld() != recipient.getWorld()) { 
-						recipients.remove(recipient);
+						recipients.remove();
 						continue;
 					}
 					if (player.getLocation().distance(recipient.getLocation()) > channel.getDistance()) {
-						recipients.remove(recipient);
+						recipients.remove();
 						continue;
 					}
-				} 
-				if (!recipient.hasPermission(channel.getReadPermission())) {
-					recipients.remove(recipient);
-					continue;
 				}
 			}
 			
@@ -107,43 +74,26 @@ public class ChatListener implements Listener{
 	
 	public void formatMessage(AsyncPlayerChatEvent event, Channel channel, boolean symbol) {
 		String format = channel.getFormat();
-		String prefix = channel.getPrefix();
-		if (channel.getName().equals("Kingdom")) {
-			if (ChatChannels.isUsingFeudal()) {
-				User user = Feudal.getUser(event.getPlayer().getUniqueId().toString());
-				Kingdom kingdom = Feudal.getKingdom(user.getKingdomUUID());
-				if (kingdom == null) {
-					event.getPlayer().sendMessage(ChatColor.RED + "You do not belong to any Feudal kingdom!");
-					event.setCancelled(true);
-					return;
-				}
-				prefix = prefix.replace("<kingdom>", kingdom.getName());
-			}
-		}
 		
-		if (channel.getName().equals("Faction")) {
-			if (ChatChannels.isUsingFactions()) {
-				MPlayer user = MPlayerColl.get().getByName(event.getPlayer().getName());
-				Faction faction = FactionColl.get().getByName(user.getFactionName());
-				prefix = prefix.replace("<faction>", faction.getName());
-			}
-		}
-		
-		format = format.replace("<prefix>", prefix);
-		format = format.replace("<player>", "%1$s");
+		format = format.replace("<prefix>", channel.getPrefix());
+		format = format.replace("<player-displayname>", event.getPlayer().getDisplayName());
+		format = format.replace("<player-username>", "%1$s");
 		format = format.replace("<message>", "%2$s");
 		event.setFormat(ChatColor.translateAlternateColorCodes('&', format));
 		
 		if (symbol) {
 			String message = event.getMessage().substring(channel.getSymbol().length(), event.getMessage().length());
-			event.setMessage(message);
+			event.setMessage(message.trim());
 		}
 	}
 	
 	public void storeMessage(String text, Player player, Channel channel, boolean used) {
 		if (used) {
-			text = text.substring(1, text.length());
+			text = text.substring(channel.getSymbol().length(), text.length());
 		}
+		
+		text = text.replace("'", "");
+		
 		DBConnection.sql.modifyQuery("INSERT INTO chatchannels (uuid, player, channel, message) VALUES ('" + player.getUniqueId() + "', '" + player.getName() + "', '" + channel.getName() + "', '" + text + "');");
 	}
 }

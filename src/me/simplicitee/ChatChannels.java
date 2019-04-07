@@ -2,8 +2,6 @@ package me.simplicitee;
 
 import java.io.File;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -26,13 +24,14 @@ public class ChatChannels extends JavaPlugin{
 		
 		new FileManager();
 		new ChatListener();
-		CommandExecutor exe = new ChannelCommand();
-		this.getCommand("channel").setExecutor(exe);
+		
+		this.getCommand("channel").setExecutor(new ChannelCommand());
 		
 		version = new Permission("chatchannels.command.version");
 		reload = new Permission("chatchannels.command.reload");
 		help = new Permission("chatchannels.command.help");
 		toggle = new Permission("chatchannels.command.toggle");
+		
 		version.setDefault(PermissionDefault.OP);
 		reload.setDefault(PermissionDefault.OP);
 		help.setDefault(PermissionDefault.OP);
@@ -70,13 +69,13 @@ public class ChatChannels extends JavaPlugin{
 		return toggle;
 	}
 	
-	public static boolean isUsingFeudal() {
+	/*public static boolean isUsingFeudal() {
 		return (Bukkit.getPluginManager().getPlugin("Feudal") != null && Bukkit.getPluginManager().getPlugin("Feudal").isEnabled());
 	}
 	
 	public static boolean isUsingFactions() {
 		return (Bukkit.getPluginManager().getPlugin("Factions") != null && Bukkit.getPluginManager().getPlugin("Factions").isEnabled());
-	}
+	}*/
 	
 	private void loadConfig() {
 		FileConfiguration config = getConfig();
