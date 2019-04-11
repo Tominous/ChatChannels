@@ -121,7 +121,7 @@ public class FileManager {
 		}
 	}
 	
-	/*public static void loadFeudal(File folder) {
+	public static void loadFeudal(File folder) {
 		File feudal = new File(folder, "Kingdom.yml");
 		
 		FileConfiguration yaml = YamlConfiguration.loadConfiguration(feudal);
@@ -189,7 +189,7 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	public static void saveFiles() {
 		for (String chat : Channel.getChannels().keySet()) {
@@ -225,13 +225,13 @@ public class FileManager {
 			loadLocal(folder);
 		}
 		
-		/*if (ChatChannels.isUsingFeudal()) {
+		if (ChatChannels.isUsingFeudal()) {
 			loadFeudal(folder);
 		}
 		
 		if (ChatChannels.isUsingFactions()) {
 			loadFactions(folder);
-		}*/
+		}
 		
 		for (File file : folder.listFiles()) {
 			FileConfiguration config = YamlConfiguration.loadConfiguration(file);
