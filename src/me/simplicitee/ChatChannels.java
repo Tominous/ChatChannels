@@ -69,13 +69,13 @@ public class ChatChannels extends JavaPlugin{
 		return toggle;
 	}
 	
-	/*public static boolean isUsingFeudal() {
+	public static boolean isUsingFeudal() {
 		return (Bukkit.getPluginManager().getPlugin("Feudal") != null && Bukkit.getPluginManager().getPlugin("Feudal").isEnabled());
 	}
 	
 	public static boolean isUsingFactions() {
 		return (Bukkit.getPluginManager().getPlugin("Factions") != null && Bukkit.getPluginManager().getPlugin("Factions").isEnabled());
-	}*/
+	}
 	
 	private void loadConfig() {
 		FileConfiguration config = getConfig();
